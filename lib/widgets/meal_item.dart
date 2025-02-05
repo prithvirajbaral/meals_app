@@ -6,7 +6,10 @@ import 'package:transparent_image/transparent_image.dart';
 // This is a StatelessWidget that represents a single meal item.
 class MealItem extends StatelessWidget {
   // Constructor to accept a meal object
-  const MealItem({super.key, required this.meal});
+  const MealItem({super.key, required this.meal, required this.onSelectMeal});
+
+    final void Function() onSelectMeal;
+
 
   // The meal object passed into this widget
   final Meal meal;
@@ -35,7 +38,7 @@ class MealItem extends StatelessWidget {
       // Elevation for a shadow effect behind the card
       elevation: 2,
       child: InkWell(
-        onTap: () {},
+        onTap: onSelectMeal,
         child: Stack(
           children: [
             // This is an image with a fade-in effect
