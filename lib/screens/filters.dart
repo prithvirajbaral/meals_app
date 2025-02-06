@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/screens/tabs.dart';
-import 'package:meals_app/widgets/main_drawer.dart';
+// import 'package:meals_app/screens/tabs.dart';
+// import 'package:meals_app/widgets/main_drawer.dart';
 
 enum Filter { glutenFree, lactoseFree, vegetarian, vegan }
 
