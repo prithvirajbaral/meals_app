@@ -4,31 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:meals_app/widgets/main_drawer.dart';
 import 'package:meals_app/providers/filters_provider.dart';
 
-class FiltersScreen extends ConsumerStatefulWidget {
+class FiltersScreen extends ConsumerWidget {
   const FiltersScreen({super.key});
 
   @override
-  ConsumerState<FiltersScreen> createState() => _FiltersScreenState();
-}
-
-class _FiltersScreenState extends ConsumerState<FiltersScreen> {
-  var _glutenFreeFilterSet = false;
-  var _lactoseFreeFilterSet = false;
-  var _vegetarianFilterSet = false;
-  var _veganFilterSet = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final activeFilters = ref.read(filtersProvider);
-    _glutenFreeFilterSet = activeFilters[Filter.glutenFree]!;
-    _lactoseFreeFilterSet = activeFilters[Filter.lactoseFree]!;
-    _vegetarianFilterSet = activeFilters[Filter.vegetarian]!;
-    _veganFilterSet = activeFilters[Filter.vegan]!;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeFilters = ref.watch(filtersProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Filters'),
@@ -45,55 +26,51 @@ class _FiltersScreenState extends ConsumerState<FiltersScreen> {
       //     }
       //   },
       // ),
-      body: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, dynamic result) {
-          if (didPop) return;
-          ref.read(filtersProvider.notifier).setFilters({
-            Filter.glutenFree: _glutenFreeFilterSet,
-            Filter.lactoseFree: _lactoseFreeFilterSet,
-            Filter.vegetarian: _vegetarianFilterSet,
-            Filter.vegan: _veganFilterSet,
-          });
-          Navigator.of(context).pop();
-        },
-        child: Column(
-          children: [
-            _buildSwitch(
+      body: Column(
+        children: [
+          _buildSwitch(context,
               title: 'Gluten-free',
               subtitle: 'Only include gluten-free meals.',
-              value: _glutenFreeFilterSet,
-              onChanged: (isChecked) =>
-                  setState(() => _glutenFreeFilterSet = isChecked),
-            ),
-            _buildSwitch(
-              title: 'Vegan',
-              subtitle: 'Only include vegan meals.',
-              value: _veganFilterSet,
-              onChanged: (isChecked) =>
-                  setState(() => _veganFilterSet = isChecked),
-            ),
-            _buildSwitch(
+              value: activeFilters[Filter.glutenFree]!, onChanged: (isChecked) {
+            ref
+                .read(filtersProvider.notifier)
+                .setFilter(Filter.glutenFree, isChecked);
+          }),
+          _buildSwitch(
+            context,
+            title: 'Vegan',
+            subtitle: 'Only include vegan meals.',
+            value: activeFilters[Filter.vegan]!,
+            onChanged: (isChecked) {
+              ref
+                  .read(filtersProvider.notifier)
+                  .setFilter(Filter.vegan, isChecked);
+            },
+          ),
+          _buildSwitch(context,
               title: 'Lactose-free',
               subtitle: 'Only include lactose-free meals.',
-              value: _lactoseFreeFilterSet,
-              onChanged: (isChecked) =>
-                  setState(() => _lactoseFreeFilterSet = isChecked),
-            ),
-            _buildSwitch(
+              value: activeFilters[Filter.lactoseFree]!,
+              onChanged: (isChecked) {
+            ref
+                .read(filtersProvider.notifier)
+                .setFilter(Filter.lactoseFree, isChecked);
+          }),
+          _buildSwitch(context,
               title: 'Vegetarian',
               subtitle: 'Only include vegetarian meals.',
-              value: _vegetarianFilterSet,
-              onChanged: (isChecked) =>
-                  setState(() => _vegetarianFilterSet = isChecked),
-            ),
-          ],
-        ),
+              value: activeFilters[Filter.vegetarian]!, onChanged: (isChecked) {
+            ref
+                .read(filtersProvider.notifier)
+                .setFilter(Filter.vegetarian, isChecked);
+          }),
+        ],
       ),
     );
   }
 
-  Widget _buildSwitch({
+  Widget _buildSwitch(
+    BuildContext context, {
     required String title,
     required String subtitle,
     required bool value,
